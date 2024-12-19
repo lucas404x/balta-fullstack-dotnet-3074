@@ -1,3 +1,3 @@
 namespace Dima.Core.Requests;
 
-public abstract record GetRequest() : BaseRequest;
+public record GetBySeqRequest(string UserId, long Seq) : BaseRequest(UserId);
