@@ -16,7 +16,9 @@ public sealed class Category : BaseEntity
             Include(new BaseEntityValidator());
             RuleFor(x => x.Title)
                 .NotEmpty()
-                .MaximumLength(80);
+                .WithMessage("O título não pode estar vazio.")
+                .MaximumLength(80)
+                .WithMessage("O título deve conter até 80 caracteres.");
             RuleFor(x => x.Description).MaximumLength(300);
         }
     }
@@ -25,7 +27,6 @@ public sealed class Category : BaseEntity
     
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public string UserId { get; set; } = string.Empty;
 
     public override List<string> Validate() => _validator.Validate(this).GetErrorMessages();
 }

@@ -35,10 +35,5 @@ public class TransactionMapping : BaseEntityConfigurations<Transaction>
             .IsRequired()
             .HasColumnType("money")
             .HasDefaultValue(0);
-        
-        builder.Property(x => x.UserId)
-            .IsRequired()
-            .HasColumnType("VARCHAR")
-            .HasMaxLength(160);
     }
 }

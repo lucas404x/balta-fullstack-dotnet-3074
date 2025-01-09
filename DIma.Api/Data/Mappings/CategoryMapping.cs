@@ -17,10 +17,5 @@ public class CategoryMapping : BaseEntityConfigurations<Category>
 
         builder.Property(x => x.Description)
             .HasColumnType("NVARCHAR(MAX)");
-
-        builder.Property(x => x.UserId)
-            .IsRequired()
-            .HasColumnType("VARCHAR")
-            .HasMaxLength(160);
     }
 }
