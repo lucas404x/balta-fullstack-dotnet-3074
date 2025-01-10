@@ -10,7 +10,7 @@ public record GetAllRequest<T>(
     List<RequestOrderByProp>? OrderByProperties = null) : BaseRequest(UserId) where T : BaseEntity
 {
     [JsonIgnore]
-    public string ColumnName { get; } = typeof(T).Name.ToLower();
+    public string TableName { get; } = typeof(T).Name;
 }
 
 public record RequestOrderByProp

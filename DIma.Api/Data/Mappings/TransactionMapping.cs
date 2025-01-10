@@ -11,7 +11,7 @@ public class TransactionMapping : BaseEntityConfigurations<Transaction>
     {
         base.Configure(builder);
         
-        builder.ToTable("Transactions");
+        builder.ToTable("Transaction");
 
         builder
             .HasOne(x => x.Category)

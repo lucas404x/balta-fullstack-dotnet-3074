@@ -4,6 +4,8 @@ namespace Dima.Core.Responses;
 
 public class PagedApiResponse<T> : ApiResponse<T>
 {
+    public PagedApiResponse() { }
+
     public PagedApiResponse(string errorMessage) : base(errorMessage)
     {
         
@@ -20,6 +22,7 @@ public class PagedApiResponse<T> : ApiResponse<T>
     
     public int CurrentPage { get; set; }
     public int PageSize { get; set; }
-    public int TotalRecords { get; set; }
-    public int TotalPages  => (int)Math.Ceiling((double)TotalRecords / PageSize);
+    public int TotalRecords { get; set; } = Configuration.DefaultPageSize;
+    public int TotalPages 
+        => TotalRecords == 0 ? 0 : (int)Math.Ceiling((double)TotalRecords / PageSize);
 }

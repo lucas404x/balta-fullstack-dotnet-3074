@@ -30,7 +30,7 @@ public class EntityRepository<T>(AppDbContext dbContext) : IEntityRepository<T> 
         StringBuilder queryBuilder = new();
 
         var userIdParam = new SqlParameter("UserId", request.UserId);
-        queryBuilder.Append($"SELECT * FROM {request.ColumnName} WHERE UserId = @UserId");
+        queryBuilder.Append($"SELECT * FROM [{request.TableName}] WHERE UserId = @UserId");
         
         int totalRecords = await _dbSet.
             FromSqlRaw(queryBuilder.ToString(), userIdParam).

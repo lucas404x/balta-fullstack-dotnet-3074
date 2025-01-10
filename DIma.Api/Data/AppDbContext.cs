@@ -20,4 +20,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         configurationBuilder.Conventions.Remove(typeof(RelationshipDiscoveryConvention));
         configurationBuilder.Conventions.Remove(typeof(ForeignKeyIndexConvention));
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+#if DEBUG
+        optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
+#endif
+    }
 }

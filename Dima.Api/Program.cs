@@ -1,33 +1,20 @@
-using Dima.Api.Data;
-using Microsoft.EntityFrameworkCore;
+using Dima.Api.Endpoints;
+using Dima.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x =>
-{
-    // shows the full qualified name instead of class's name only.
-    x.CustomSchemaIds(n => n.FullName);
-});
-
-builder.Services.AddDbContext<AppDbContext>(x =>
-{
-    x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+builder.AddApiDocs();
+builder.AddServices();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.ConfigureDevEnv();
 }
 
-app.UseHttpsRedirection();
+app.UseSecurity();
 
-app.MapGet("/", () => "Hello World!");
+app.MapEndpoints();
 
 app.Run();
