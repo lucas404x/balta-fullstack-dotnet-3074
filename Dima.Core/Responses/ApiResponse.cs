@@ -8,7 +8,7 @@ public class ApiResponse<T>
     private readonly HttpStatusCode _code;
 
     public T? Result { get; set; }
-    public string? ErrorMessage { get; set; }
+    public string Message { get; set; } = string.Empty;
 
     public bool IsSuccess => (int)_code < 400;
 
@@ -18,15 +18,16 @@ public class ApiResponse<T>
         _code = HttpStatusCode.OK;
     }
     
-    public ApiResponse(T result, HttpStatusCode code = HttpStatusCode.OK)
+    public ApiResponse(T result, string message, HttpStatusCode code = HttpStatusCode.OK)
     {
         Result = result;
+        Message = message;
         _code = code;
     }
 
     public ApiResponse(string errorMessage, HttpStatusCode code = HttpStatusCode.InternalServerError)
     {
-        ErrorMessage = errorMessage;
+        Message = errorMessage;
         _code = code;
     }
     

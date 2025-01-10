@@ -9,7 +9,8 @@ using System.Text;
 
 namespace Dima.Api.Data.Repositories;
 
-public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityRepository<TEntity> where TEntity : BaseEntity
+public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityRepository<TEntity> 
+    where TEntity : BaseEntity
 {
     private static readonly FrozenSet<string> _entityProps = typeof(TEntity).GetProperties()
         .Select(x => x.Name.ToLower())
@@ -72,11 +73,9 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
     }
 
     public async Task<TEntity?> GetById(GetBySeqRequest request)
-    {
-        var entity = await _dbSet.FirstOrDefaultAsync(x => x.Seq == request.Seq && request.UserId == x.UserId);
-        if (entity is null) throw new EntityNotFoundException(request.Seq);
-        return entity;
-    }
+        => request.Seq == 0 
+        ? null 
+        : await _dbSet.FirstOrDefaultAsync(x => x.Seq == request.Seq && request.UserId == x.UserId);
 
     public async Task<TEntity> Create(CreateRequest<TEntity> request)
     {
@@ -85,25 +84,21 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
         return request.Entity;
     }
 
-    public async Task<TEntity> Update(UpdateRequest<TEntity> request)
+    public async Task<TEntity?> Update(UpdateRequest<TEntity> request)
     {
+        if (request.Entity.Seq == 0) return null;
         bool entityExists = await _dbSet.AnyAsync(x => x.Seq == request.Entity.Seq && x.UserId == request.Entity.UserId);
-        if (!entityExists)
-        {
-            throw new EntityNotFoundException(request.Entity.Seq);
-        }
+        if (!entityExists) return null;
         _dbSet.Update(request.Entity);
         await dbContext.SaveChangesAsync();
         return request.Entity;
     }
 
-    public async Task<bool> Delete(DeleteBySeqRequest request)
+    public async Task<bool?> Delete(DeleteBySeqRequest request)
     {
+        if (request.Seq == 0) return null;
         var entity = await _dbSet.FirstOrDefaultAsync(x => x.UserId == request.UserId && x.Seq == request.Seq);
-        if (entity is null)
-        {
-            throw new EntityNotFoundException(request.Seq);
-        }
+        if (entity is null) return null;
         _dbSet.Remove(entity);
         await dbContext.SaveChangesAsync();
         return true;

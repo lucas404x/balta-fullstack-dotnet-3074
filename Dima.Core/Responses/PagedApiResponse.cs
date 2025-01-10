@@ -5,14 +5,13 @@ namespace Dima.Core.Responses;
 
 public class PagedApiResponse<T> : ApiResponse<T>
 {
-    public PagedApiResponse() { }
-
     [JsonConstructor]
     public PagedApiResponse(
-        T result, 
+        T result,
+        string message,
         int currentPage, 
         int totalRecords, 
-        int pageSize = Configuration.DefaultPageSize) : base(result)
+        int pageSize = Configuration.DefaultPageSize) : base(result, message)
     {
         CurrentPage = currentPage;
         TotalRecords = totalRecords;

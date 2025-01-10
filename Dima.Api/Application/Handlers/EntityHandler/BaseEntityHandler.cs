@@ -1,4 +1,5 @@
 ﻿using Dima.Api.Domain.Abstractions;
+using Dima.Api.Domain.Exceptions.EntityExceptions;
 using Dima.Core.Entities;
 using Dima.Core.Handlers.EntityHandlers;
 using Dima.Core.Requests;
@@ -11,47 +12,34 @@ abstract public class BaseEntityHandler<TEntity>(IEntityRepository<TEntity> repo
 {
     public async Task<PagedApiResponse<List<TEntity>>> GetAll(GetAllRequest<TEntity> request)
     {
-        var response = new PagedApiResponse<List<TEntity>>();
         var (values, totalRecords) = await repository.GetAll(request);
-        response.Result = values;
-        response.TotalRecords = totalRecords;
-        response.CurrentPage = request.PageNumber;
-        return response;
+        return new(values, "Registros recuperados com sucesso!", request.PageNumber, totalRecords, request.PageSize);
     }
 
     public async Task<ApiResponse<TEntity>> GetBySeq(GetBySeqRequest request)
     {
-        var response = new ApiResponse<TEntity>
-        {
-            Result = await repository.GetById(request)
-        };
-        return response;
+        var result = await repository.GetById(request);
+        return result
+            is not null ? new(result, $"Registro {request.Seq} recuperado com sucesso!")
+            : throw new EntityNotFoundException(request.Seq);
     }
 
     public async Task<ApiResponse<TEntity>> Create(CreateRequest<TEntity> request)
-    {
-        var response = new ApiResponse<TEntity>
-        {
-            Result = await repository.Create(request)
-        };
-        return response;
-    }
+        => new(await repository.Create(request), "Registro criado com sucesso!");
 
     public async Task<ApiResponse<TEntity>> Update(UpdateRequest<TEntity> request)
     {
-        var response = new ApiResponse<TEntity>
-        {
-            Result = await repository.Update(request)
-        };
-        return response;
+        var result = await repository.Update(request);
+        return result
+            is not null ? new(result, "Registro atualizado com sucesso!")
+            : throw new EntityNotFoundException(request.Entity.Seq);
     }
 
     public async Task<ApiResponse<bool>> Delete(DeleteBySeqRequest request)
     {
-        var response = new ApiResponse<bool>
-        {
-            Result = await repository.Delete(request)
-        };
-        return response;
+        var result = await repository.Delete(request);
+        return result
+            is not null ? new(result ?? false, $"Registro {request.Seq} removido com sucesso!")
+            : throw new EntityNotFoundException(request.Seq);
     }
 }
