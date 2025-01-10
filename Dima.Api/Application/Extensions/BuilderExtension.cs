@@ -1,4 +1,5 @@
-﻿using Dima.Api.Application.Handlers.EntityHandler;
+﻿using Dima.Api.Application.ExceptionHandlers;
+using Dima.Api.Application.Handlers.EntityHandler;
 using Dima.Api.Data;
 using Dima.Api.Data.Repositories;
 using Dima.Api.Domain.Abstractions;
@@ -28,9 +29,15 @@ internal static class BuilderExtension
             x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
 
+        // Repositories
         builder.Services.AddScoped(typeof(IEntityRepository<>), typeof(EntityRepository<>));
 
+        // Handlers
         builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
         builder.Services.AddTransient<ITransactionHandler, TransactionHandler>();
+
+        // Exception Handlers
+        builder.Services.AddExceptionHandler<DomainExceptionHandler>();
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
     }
 }

@@ -3,7 +3,8 @@
 namespace Dima.Api.Domain.Exceptions;
 
 public class DomainException(
-    string? Message, 
-    HttpStatusCode Code = HttpStatusCode.BadRequest) : Exception(Message)
+    string? message, 
+    HttpStatusCode code = HttpStatusCode.BadRequest) : Exception(message)
 {
+    public HttpStatusCode Code { get; private set; } = code;
 }

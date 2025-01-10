@@ -21,7 +21,7 @@ internal class EntityValidationFilter<TEntity> : IEndpointFilter
             string? errorMsg = request.Entity.Validate().FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(errorMsg))
             {
-                return Results.UnprocessableEntity(new ApiResponse<TEntity>(errorMsg, System.Net.HttpStatusCode.UnprocessableEntity));
+                return TypedResults.UnprocessableEntity(new ApiResponse<TEntity>(errorMsg, System.Net.HttpStatusCode.UnprocessableEntity));
             }
         }
         return await next.Invoke(context);

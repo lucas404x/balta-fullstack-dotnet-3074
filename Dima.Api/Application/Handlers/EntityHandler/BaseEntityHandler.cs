@@ -12,78 +12,46 @@ abstract public class BaseEntityHandler<TEntity>(IEntityRepository<TEntity> repo
     public async Task<PagedApiResponse<List<TEntity>>> GetAll(GetAllRequest<TEntity> request)
     {
         var response = new PagedApiResponse<List<TEntity>>();
-        try
-        {
-            var (values, totalRecords) = await repository.GetAll(request);
-            response.Result = values;
-            response.TotalRecords = totalRecords;
-            response.CurrentPage = request.PageNumber;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            throw;
-        }
+        var (values, totalRecords) = await repository.GetAll(request);
+        response.Result = values;
+        response.TotalRecords = totalRecords;
+        response.CurrentPage = request.PageNumber;
         return response;
     }
 
     public async Task<ApiResponse<TEntity>> GetBySeq(GetBySeqRequest request)
     {
-        var response = new ApiResponse<TEntity>();
-        try
+        var response = new ApiResponse<TEntity>
         {
-            response.Result = await repository.GetById(request);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            throw;
-        }
+            Result = await repository.GetById(request)
+        };
         return response;
     }
 
     public async Task<ApiResponse<TEntity>> Create(CreateRequest<TEntity> request)
     {
-        var response = new ApiResponse<TEntity>();
-        try
+        var response = new ApiResponse<TEntity>
         {
-            response.Result = await repository.Create(request);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            throw;
-        }
+            Result = await repository.Create(request)
+        };
         return response;
     }
 
     public async Task<ApiResponse<TEntity>> Update(UpdateRequest<TEntity> request)
     {
-        var response = new ApiResponse<TEntity>();
-        try
+        var response = new ApiResponse<TEntity>
         {
-            response.Result = await repository.Update(request);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            throw;
-        }
+            Result = await repository.Update(request)
+        };
         return response;
     }
 
     public async Task<ApiResponse<bool>> Delete(DeleteBySeqRequest request)
     {
-        var response = new ApiResponse<bool>();
-        try
+        var response = new ApiResponse<bool>
         {
-            response.Result = await repository.Delete(request);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            throw;
-        }
+            Result = await repository.Delete(request)
+        };
         return response;
     }
 }
