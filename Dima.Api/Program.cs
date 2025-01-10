@@ -14,7 +14,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSecurity();
-
+app.UseApiMiddlewares();
 app.MapEndpoints();
 
 app.Run();

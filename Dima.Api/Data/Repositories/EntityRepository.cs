@@ -15,6 +15,8 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
         .Select(x => x.Name.ToLower())
         .ToFrozenSet();
 
+    private static readonly (List<TEntity> values, int totalRecords) _emptyRecords = ([], 0);
+
     private readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
     
     public async Task<(List<TEntity> values, int totalRecords)> GetAll(GetAllRequest<TEntity> request)
@@ -28,7 +30,7 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
             FromSqlRaw(queryBuilder.ToString(), userIdParam).
             CountAsync();
 
-        if (totalRecords == 0) return ([], 0);
+        if (totalRecords == 0) return _emptyRecords;
         if (request.OrderByProperties?.Count > 0)
         {
             ValidateOrderByProperties(request);

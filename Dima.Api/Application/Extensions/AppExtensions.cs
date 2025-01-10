@@ -9,6 +9,11 @@ internal static class AppExtensions
         // app.MapSwagger().RequireAuthorization();
     }
 
+    public static void UseApiMiddlewares(this WebApplication app)
+    {
+        app.UseExceptionHandler();
+    }
+
     public static void UseSecurity(this WebApplication app)
     {
         app.UseHttpsRedirection();

@@ -37,6 +37,7 @@ internal static class BuilderExtension
         builder.Services.AddTransient<ITransactionHandler, TransactionHandler>();
 
         // Exception Handlers
+        builder.Services.AddProblemDetails();
         builder.Services.AddExceptionHandler<DomainExceptionHandler>();
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
     }
