@@ -1,7 +1,7 @@
-﻿using Dima.Api.Core.Abstractions;
-using Dima.Api.Endpoints.EntityEndpoints;
+﻿using Dima.Api.Application.Endpoints.EntityEndpoints;
+using Dima.Api.Domain.Abstractions;
 
-namespace Dima.Api.Endpoints;
+namespace Dima.Api.Application.Endpoints;
 
 internal static class Endpoint
 {

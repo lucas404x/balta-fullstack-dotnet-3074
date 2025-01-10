@@ -1,4 +1,4 @@
-﻿namespace Dima.Api.Extensions;
+﻿namespace Dima.Api.Application.Extensions;
 
 internal static class AppExtensions
 {

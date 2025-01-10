@@ -2,7 +2,7 @@
 using Dima.Core.Requests;
 using Dima.Core.Responses;
 
-namespace Dima.Api.Filters;
+namespace Dima.Api.Application.Filters;
 
 /// <summary>
 /// Retrieves the parameter whose inherithes from <seealso cref="BaseRequestWithEntity{T}"/> and validates the entity.

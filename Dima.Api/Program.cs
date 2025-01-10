@@ -1,5 +1,5 @@
-using Dima.Api.Endpoints;
-using Dima.Api.Extensions;
+using Dima.Api.Application.Endpoints;
+using Dima.Api.Application.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

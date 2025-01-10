@@ -1,4 +1,5 @@
-﻿using Dima.Api.Core.Abstractions;
+﻿using Dima.Api.Domain.Abstractions;
+using Dima.Api.Domain.Exceptions.EntityExceptions;
 using Dima.Core.Entities;
 using Dima.Core.Requests;
 using Microsoft.Data.SqlClient;
@@ -8,15 +9,15 @@ using System.Text;
 
 namespace Dima.Api.Data.Repositories;
 
-public class EntityRepository<T>(AppDbContext dbContext) : IEntityRepository<T> where T : BaseEntity
+public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityRepository<TEntity> where TEntity : BaseEntity
 {
-    private static readonly FrozenSet<string> _entityProps = typeof(T).GetProperties()
+    private static readonly FrozenSet<string> _entityProps = typeof(TEntity).GetProperties()
         .Select(x => x.Name.ToLower())
         .ToFrozenSet();
 
-    private readonly DbSet<T> _dbSet = dbContext.Set<T>();
+    private readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
     
-    public async Task<(List<T> values, int totalRecords)> GetAll(GetAllRequest<T> request)
+    public async Task<(List<TEntity> values, int totalRecords)> GetAll(GetAllRequest<TEntity> request)
     {
         StringBuilder queryBuilder = new();
 
@@ -30,7 +31,7 @@ public class EntityRepository<T>(AppDbContext dbContext) : IEntityRepository<T> 
         if (totalRecords == 0) return ([], 0);
         if (request.OrderByProperties?.Count > 0)
         {
-            ValidateOrderByProperties(request.OrderByProperties);
+            ValidateOrderByProperties(request);
             ApplyOrderBy(queryBuilder, request.OrderByProperties);
         }
         queryBuilder.Append($" OFFSET {request.PageSize} * {request.PageNumber - 1} ROWS FETCH NEXT {request.PageSize} ROWS ONLY;");
@@ -43,13 +44,13 @@ public class EntityRepository<T>(AppDbContext dbContext) : IEntityRepository<T> 
         return (result, totalRecords);
     }
 
-    private static void ValidateOrderByProperties(List<RequestOrderByProp> orderByProperties)
+    private static void ValidateOrderByProperties(GetAllRequest<TEntity> request)
     {
-        foreach (var orderByProp in orderByProperties)
+        foreach (var orderByProp in request.OrderByProperties!)
         {
             if (!_entityProps.Contains(orderByProp.Property))
             {
-                throw new ArgumentException($"Property {orderByProp.Property} does not exist in entity {typeof(T).Name}");
+                throw new InvalidProvidedColumnNameException(request.TableName, orderByProp.Property);
             }
         }
     }
@@ -68,20 +69,27 @@ public class EntityRepository<T>(AppDbContext dbContext) : IEntityRepository<T> 
         }
     }
 
-    public async Task<T?> GetById(GetBySeqRequest request)
+    public async Task<TEntity?> GetById(GetBySeqRequest request)
     {
-        return await _dbSet.FirstOrDefaultAsync(x => x.Seq == request.Seq);
+        var entity = await _dbSet.FirstOrDefaultAsync(x => x.Seq == request.Seq && request.UserId == x.UserId);
+        if (entity is null) throw new EntityNotFoundException(request.Seq);
+        return entity;
     }
 
-    public async Task<T> Create(CreateRequest<T> request)
+    public async Task<TEntity> Create(CreateRequest<TEntity> request)
     {
         await _dbSet.AddAsync(request.Entity);
         await dbContext.SaveChangesAsync();
         return request.Entity;
     }
 
-    public async Task<T> Update(UpdateRequest<T> request)
+    public async Task<TEntity> Update(UpdateRequest<TEntity> request)
     {
+        bool entityExists = await _dbSet.AnyAsync(x => x.Seq == request.Entity.Seq && x.UserId == request.Entity.UserId);
+        if (!entityExists)
+        {
+            throw new EntityNotFoundException(request.Entity.Seq);
+        }
         _dbSet.Update(request.Entity);
         await dbContext.SaveChangesAsync();
         return request.Entity;
@@ -92,13 +100,10 @@ public class EntityRepository<T>(AppDbContext dbContext) : IEntityRepository<T> 
         var entity = await _dbSet.FirstOrDefaultAsync(x => x.UserId == request.UserId && x.Seq == request.Seq);
         if (entity is null)
         {
-
+            throw new EntityNotFoundException(request.Seq);
         }
-
-
-        int affectedRows = await _dbSet.
-            Where(x => x.Seq == request.Seq).
-            ExecuteDeleteAsync();
-        return affectedRows == 1;
+        _dbSet.Remove(entity);
+        await dbContext.SaveChangesAsync();
+        return true;
     }
 }

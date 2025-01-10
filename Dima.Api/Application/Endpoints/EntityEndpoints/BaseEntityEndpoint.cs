@@ -1,6 +1,5 @@
-﻿
-using Dima.Api.Core.Abstractions;
-using Dima.Api.Filters;
+﻿using Dima.Api.Application.Filters;
+using Dima.Api.Domain.Abstractions;
 using Dima.Core.Entities;
 using Dima.Core.Handlers.EntityHandlers;
 using Dima.Core.Requests;
@@ -8,9 +7,9 @@ using Dima.Core.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace Dima.Api.Endpoints.EntityEndpoints;
+namespace Dima.Api.Application.Endpoints.EntityEndpoints;
 
-abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup 
+abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup
     where TEntity : BaseEntity
     where THandler : IEntityHandler<TEntity>
 {

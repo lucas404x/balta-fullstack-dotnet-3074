@@ -1,11 +1,11 @@
-﻿using Dima.Api.Core.Abstractions;
+﻿using Dima.Api.Application.Handlers.EntityHandler;
 using Dima.Api.Data;
 using Dima.Api.Data.Repositories;
-using Dima.Api.Handlers.EntityHandler;
+using Dima.Api.Domain.Abstractions;
 using Dima.Core.Handlers.EntityHandlers;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dima.Api.Extensions;
+namespace Dima.Api.Application.Extensions;
 
 internal static class BuilderExtension
 {

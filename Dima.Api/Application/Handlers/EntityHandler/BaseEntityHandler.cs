@@ -1,16 +1,17 @@
-﻿using Dima.Api.Core.Abstractions;
+﻿using Dima.Api.Domain.Abstractions;
 using Dima.Core.Entities;
 using Dima.Core.Handlers.EntityHandlers;
 using Dima.Core.Requests;
 using Dima.Core.Responses;
 
-namespace Dima.Api.Handlers.EntityHandler;
+namespace Dima.Api.Application.Handlers.EntityHandler;
 
-abstract public class BaseEntityHandler<T>(IEntityRepository<T> repository) : IEntityHandler<T> where T : BaseEntity
+abstract public class BaseEntityHandler<TEntity>(IEntityRepository<TEntity> repository) : IEntityHandler<TEntity>
+    where TEntity : BaseEntity
 {
-    public async Task<PagedApiResponse<List<T>>> GetAll(GetAllRequest<T> request)
+    public async Task<PagedApiResponse<List<TEntity>>> GetAll(GetAllRequest<TEntity> request)
     {
-        var response = new PagedApiResponse<List<T>>();
+        var response = new PagedApiResponse<List<TEntity>>();
         try
         {
             var (values, totalRecords) = await repository.GetAll(request);
@@ -26,9 +27,9 @@ abstract public class BaseEntityHandler<T>(IEntityRepository<T> repository) : IE
         return response;
     }
 
-    public async Task<ApiResponse<T>> GetBySeq(GetBySeqRequest request)
+    public async Task<ApiResponse<TEntity>> GetBySeq(GetBySeqRequest request)
     {
-        var response = new ApiResponse<T>();
+        var response = new ApiResponse<TEntity>();
         try
         {
             response.Result = await repository.GetById(request);
@@ -41,9 +42,9 @@ abstract public class BaseEntityHandler<T>(IEntityRepository<T> repository) : IE
         return response;
     }
 
-    public async Task<ApiResponse<T>> Create(CreateRequest<T> request)
+    public async Task<ApiResponse<TEntity>> Create(CreateRequest<TEntity> request)
     {
-        var response = new ApiResponse<T>();
+        var response = new ApiResponse<TEntity>();
         try
         {
             response.Result = await repository.Create(request);
@@ -56,9 +57,9 @@ abstract public class BaseEntityHandler<T>(IEntityRepository<T> repository) : IE
         return response;
     }
 
-    public async Task<ApiResponse<T>> Update(UpdateRequest<T> request)
+    public async Task<ApiResponse<TEntity>> Update(UpdateRequest<TEntity> request)
     {
-        var response = new ApiResponse<T>();
+        var response = new ApiResponse<TEntity>();
         try
         {
             response.Result = await repository.Update(request);

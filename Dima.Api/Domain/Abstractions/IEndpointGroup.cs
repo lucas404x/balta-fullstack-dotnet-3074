@@ -1,4 +1,4 @@
-﻿namespace Dima.Api.Core.Abstractions;
+﻿namespace Dima.Api.Domain.Abstractions;
 
 internal interface IEndpointGroup
 {

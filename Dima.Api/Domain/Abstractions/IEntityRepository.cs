@@ -1,7 +1,7 @@
 ﻿using Dima.Core.Entities;
 using Dima.Core.Requests;
 
-namespace Dima.Api.Core.Abstractions;
+namespace Dima.Api.Domain.Abstractions;
 
 public interface IEntityRepository<T> where T : BaseEntity
 {
