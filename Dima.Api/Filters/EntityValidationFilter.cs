@@ -4,6 +4,10 @@ using Dima.Core.Responses;
 
 namespace Dima.Api.Filters;
 
+/// <summary>
+/// Retrieves the parameter whose inherithes from <seealso cref="BaseRequestWithEntity{T}"/> and validates the entity.
+/// </summary>
+/// <typeparam name="TEntity"></typeparam>
 internal class EntityValidationFilter<TEntity> : IEndpointFilter
     where TEntity : BaseEntity
 {
@@ -11,18 +15,13 @@ internal class EntityValidationFilter<TEntity> : IEndpointFilter
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        var request = (BaseRequestWithEntity<TEntity>?)context.Arguments.FirstOrDefault(x =>
-        {
-            var t = x?.GetType();
-            return t is not null && t.IsSubclassOf(_requestType);
-        });
+        var request = (BaseRequestWithEntity<TEntity>?)context.Arguments.FirstOrDefault(x => x?.GetType()?.IsSubclassOf(_requestType) ?? false);
         if (request is not null)
         {
             string? errorMsg = request.Entity.Validate().FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(errorMsg))
             {
-                var response = new ApiResponse<object> { ErrorMessage = errorMsg };
-                return Results.UnprocessableEntity(response);
+                return Results.UnprocessableEntity(new ApiResponse<TEntity>(errorMsg, System.Net.HttpStatusCode.UnprocessableEntity));
             }
         }
         return await next.Invoke(context);

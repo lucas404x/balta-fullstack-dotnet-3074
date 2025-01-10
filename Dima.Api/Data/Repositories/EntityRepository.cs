@@ -1,4 +1,5 @@
-﻿using Dima.Core.Entities;
+﻿using Dima.Api.Core.Abstractions;
+using Dima.Core.Entities;
 using Dima.Core.Requests;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -6,15 +7,6 @@ using System.Collections.Frozen;
 using System.Text;
 
 namespace Dima.Api.Data.Repositories;
-
-public interface IEntityRepository<T> where T : BaseEntity
-{
-    Task<(List<T> values, int totalRecords)> GetAll(GetAllRequest<T> request);
-    Task<T?> GetById(GetBySeqRequest request);
-    Task<T> Create(CreateRequest<T> request);
-    Task<T> Update(UpdateRequest<T> request);
-    Task<bool> Delete(DeleteBySeqRequest request);
-}
 
 public class EntityRepository<T>(AppDbContext dbContext) : IEntityRepository<T> where T : BaseEntity
 {
@@ -97,6 +89,13 @@ public class EntityRepository<T>(AppDbContext dbContext) : IEntityRepository<T> 
 
     public async Task<bool> Delete(DeleteBySeqRequest request)
     {
+        var entity = await _dbSet.FirstOrDefaultAsync(x => x.UserId == request.UserId && x.Seq == request.Seq);
+        if (entity is null)
+        {
+
+        }
+
+
         int affectedRows = await _dbSet.
             Where(x => x.Seq == request.Seq).
             ExecuteDeleteAsync();

@@ -1,7 +1,7 @@
-﻿using Dima.Api.Data;
+﻿using Dima.Api.Core.Abstractions;
+using Dima.Api.Data;
 using Dima.Api.Data.Repositories;
 using Dima.Api.Handlers.EntityHandler;
-using Dima.Core.Entities;
 using Dima.Core.Handlers.EntityHandlers;
 using Microsoft.EntityFrameworkCore;
 

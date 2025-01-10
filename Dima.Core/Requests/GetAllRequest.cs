@@ -11,6 +11,23 @@ public record GetAllRequest<T>(
 {
     [JsonIgnore]
     public string TableName { get; } = typeof(T).Name;
+
+    public string? Validate()
+    {
+        if (PageNumber < 1) return "Page number must be greater than 0.";
+        if (PageSize < 1) return "Page size must be greater than 0.";
+        if (OrderByProperties is not null && OrderByProperties.Count > 1)
+        {
+            var groupedProps = OrderByProperties
+                .Select(x => x.Property.ToLower())
+                .GroupBy(x => x)
+                .ToList();
+
+            if (groupedProps.Count != OrderByProperties.Count)
+                return "There are duplicated properties in the OrderByProperties list.";
+        }
+        return null;
+    }
 }
 
 public record RequestOrderByProp

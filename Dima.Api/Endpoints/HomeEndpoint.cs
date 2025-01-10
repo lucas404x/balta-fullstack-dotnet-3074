@@ -1,4 +1,6 @@
 ﻿
+using Dima.Api.Core.Abstractions;
+
 namespace Dima.Api.Endpoints;
 
 internal class HomeEndpoint : IEndpointGroup

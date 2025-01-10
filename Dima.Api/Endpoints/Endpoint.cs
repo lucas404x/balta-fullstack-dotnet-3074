@@ -1,4 +1,5 @@
-﻿using Dima.Api.Endpoints.EntityEndpoints;
+﻿using Dima.Api.Core.Abstractions;
+using Dima.Api.Endpoints.EntityEndpoints;
 
 namespace Dima.Api.Endpoints;
 
@@ -16,9 +17,4 @@ internal static class Endpoint
         TEndpoint.Map(app);
         return app;
     }
-}
-
-internal interface IEndpointGroup
-{
-    static abstract void Map(IEndpointRouteBuilder app);
 }

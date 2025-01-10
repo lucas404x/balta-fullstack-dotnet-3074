@@ -1,4 +1,4 @@
-﻿using Dima.Api.Data.Repositories;
+﻿using Dima.Api.Core.Abstractions;
 using Dima.Core.Entities;
 using Dima.Core.Handlers.EntityHandlers;
 using Dima.Core.Requests;
