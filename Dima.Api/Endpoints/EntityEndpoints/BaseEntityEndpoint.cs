@@ -1,4 +1,5 @@
 ﻿
+using Dima.Api.Filters;
 using Dima.Core.Entities;
 using Dima.Core.Handlers.EntityHandlers;
 using Dima.Core.Requests;
@@ -20,9 +21,11 @@ abstract internal class BaseEntityEndpoint<TEntity> : IEndpointGroup where TEnti
             .WithDescription($"Get all registers from {_tableName} using pagination.");
 
         mapGroup.MapPost("/", HandleCreate)
+            .AddEndpointFilter<EntityValidationFilter<TEntity>>()
             .WithDescription($"Create a brand new register into {_tableName}.");
 
         mapGroup.MapPut("/", HandleUpdate)
+            .AddEndpointFilter<EntityValidationFilter<TEntity>>()
             .WithDescription($"Update effeciently an existing register in the {_tableName}.");
         
         mapGroup.MapDelete("/{seq}", HandleDelete)

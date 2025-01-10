@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Dima.Core.Entities;
+﻿using Dima.Core.Entities;
 using Dima.Core.Requests;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
