@@ -10,5 +10,6 @@ public sealed class Transaction : BaseEntity
     public decimal Amount { get; set; }
     public long SeqCategory { get; set; }
     public Category Category { get; set; } = null!;
+
     public override List<string> Validate() => [];
 }

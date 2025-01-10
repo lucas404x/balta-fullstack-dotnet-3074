@@ -22,7 +22,4 @@ public abstract class BaseEntity
     public DateTime? ModifiedDate { get; set; }
 
     public abstract List<string> Validate();
-    
-    public virtual Task<List<string>> ValidateAsync()
-     => Task.FromResult(Validate());
 }

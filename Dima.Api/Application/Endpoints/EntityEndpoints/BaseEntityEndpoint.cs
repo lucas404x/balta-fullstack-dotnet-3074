@@ -22,36 +22,21 @@ abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup
             .WithTags(_tableName);
 
         mapGroup.MapPost("/get-all", HandleGetAll)
-            .WithDescription($"Get all registers from {_tableName} using pagination.")
-            .Produces<PagedApiResponse<List<TEntity>>>()
-            .Produces<PagedApiResponse<List<TEntity>>>(StatusCodes.Status400BadRequest)
-            .Produces<PagedApiResponse<List<TEntity>>>(StatusCodes.Status500InternalServerError);
+            .WithDescription($"Get all registers from {_tableName} using pagination.");
 
         mapGroup.MapPost("/", HandleCreate)
-            .AddEndpointFilter<EntityValidationFilter<TEntity>>()
             .WithDescription($"Create a brand new register into {_tableName}.")
-            .Produces<ApiResponse<TEntity>>()
-            .Produces<ApiResponse<TEntity>>(StatusCodes.Status422UnprocessableEntity)
-            .Produces<ApiResponse<TEntity>>(StatusCodes.Status500InternalServerError);
+            .AddEndpointFilter<EntityValidationFilter<TEntity>>();
 
         mapGroup.MapPut("/", HandleUpdate)
-            .AddEndpointFilter<EntityValidationFilter<TEntity>>()
             .WithDescription($"Update effeciently an existing register in the {_tableName}.")
-            .Produces<ApiResponse<TEntity>>()
-            .Produces<ApiResponse<TEntity>>(StatusCodes.Status422UnprocessableEntity)
-            .Produces<ApiResponse<TEntity>>(StatusCodes.Status500InternalServerError);
-
+            .AddEndpointFilter<EntityValidationFilter<TEntity>>();
+        
         mapGroup.MapDelete("/{seq}", HandleDelete)
-            .WithDescription($"Delete an register from the table {_tableName}.")
-            .Produces<ApiResponse<bool>>()
-            .Produces<ApiResponse<TEntity>>(StatusCodes.Status404NotFound)
-            .Produces<ApiResponse<TEntity>>(StatusCodes.Status500InternalServerError);
+            .WithDescription($"Delete an register from the table {_tableName}.");
 
         mapGroup.MapGet("/{seq}", HandleGetBySeq)
-            .WithDescription($"Retrieves a {_tableName} register by Seq.")
-            .Produces<ApiResponse<TEntity>>()
-            .Produces<ApiResponse<TEntity>>(StatusCodes.Status404NotFound)
-            .Produces<ApiResponse<TEntity>>(StatusCodes.Status500InternalServerError);
+            .WithDescription($"Retrieves a {_tableName} register by Seq.");
     }
 
     private static async Task<IValueHttpResult<PagedApiResponse<List<TEntity>>>> HandleGetAll(
@@ -82,7 +67,7 @@ abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup
         THandler entityHandler)
         => TypedResults.Ok(await entityHandler.Delete(new(UserId, seq)));
 
-    private static async Task<IResult> HandleGetBySeq(
+    private static async Task<IValueHttpResult<ApiResponse<TEntity>>> HandleGetBySeq(
         long seq,
         [FromHeader] string UserId,
         THandler entityHandler)
