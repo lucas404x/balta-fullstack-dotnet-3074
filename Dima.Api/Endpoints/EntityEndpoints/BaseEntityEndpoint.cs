@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dima.Api.Endpoints.EntityEndpoints;
 
-abstract internal class BaseEntityEndpoint<TEntity> : IEndpointGroup where TEntity : BaseEntity
+abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup 
+    where TEntity : BaseEntity
+    where THandler : IEntityHandler<TEntity>
 {
     private static readonly string _tableName = typeof(TEntity).Name;
 
@@ -37,28 +39,28 @@ abstract internal class BaseEntityEndpoint<TEntity> : IEndpointGroup where TEnti
 
     private static async Task<IResult> HandleGetAll(
         GetAllRequest<TEntity> request,
-        IEntityHandler<TEntity> entityHandler)
+        THandler entityHandler)
         => TypedResults.Ok(await entityHandler.GetAll(request));
 
     private static async Task<IResult> HandleCreate(
         CreateRequest<TEntity> request,
-        IEntityHandler<TEntity> entityHandler)
+        THandler entityHandler)
         => TypedResults.Ok(await entityHandler.Create(request));
 
     private static async Task<IResult> HandleUpdate(
         UpdateRequest<TEntity> request,
-        IEntityHandler<TEntity> entityHandler)
+        THandler entityHandler)
         => TypedResults.Ok(await entityHandler.Update(request));
 
     private static async Task<IResult> HandleDelete(
         long seq,
         [FromHeader] string UserId,
-        IEntityHandler<TEntity> entityHandler)
+        THandler entityHandler)
         => TypedResults.Ok(await entityHandler.Delete(new(UserId, seq)));
 
     private static async Task<IResult> HandleGetBySeq(
         long seq,
         [FromHeader] string UserId,
-        IEntityHandler<TEntity> entityHandler)
+        THandler entityHandler)
         => TypedResults.Ok(await entityHandler.GetBySeq(new(UserId, seq)));
 }

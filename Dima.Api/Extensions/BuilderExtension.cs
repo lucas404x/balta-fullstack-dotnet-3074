@@ -30,7 +30,7 @@ internal static class BuilderExtension
 
         builder.Services.AddScoped(typeof(IEntityRepository<>), typeof(EntityRepository<>));
 
-        builder.Services.AddTransient<IEntityHandler<Category>, CategoryHandler>();
-        builder.Services.AddTransient<IEntityHandler<Transaction>, TransactionHandler>();
+        builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
+        builder.Services.AddTransient<ITransactionHandler, TransactionHandler>();
     }
 }
