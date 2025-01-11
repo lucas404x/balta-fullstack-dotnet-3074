@@ -10,34 +10,34 @@ namespace Dima.Api.Application.Handlers.EntityHandler;
 abstract public class BaseEntityHandler<TEntity>(IEntityRepository<TEntity> repository) : IEntityHandler<TEntity>
     where TEntity : BaseEntity
 {
-    public async Task<PagedApiResponse<List<TEntity>>> GetAll(GetAllRequest<TEntity> request)
+    public async Task<PagedApiResponse<List<TEntity>>> GetAll(GetAllRequest<TEntity> request, CancellationToken cancellationToken = default)
     {
-        var (values, totalRecords) = await repository.GetAll(request);
+        var (values, totalRecords) = await repository.GetAll(request, cancellationToken);
         return new(values, "Registros recuperados com sucesso!", request.PageNumber, totalRecords, request.PageSize);
     }
 
-    public async Task<ApiResponse<TEntity>> GetBySeq(GetBySeqRequest request)
+    public async Task<ApiResponse<TEntity>> GetBySeq(GetBySeqRequest request, CancellationToken cancellationToken = default)
     {
-        var result = await repository.GetById(request);
+        var result = await repository.GetById(request, cancellationToken);
         return result
             is not null ? new(result, $"Registro {request.Seq} recuperado com sucesso!")
             : throw new EntityNotFoundException(request.Seq);
     }
 
-    public async Task<ApiResponse<TEntity>> Create(CreateRequest<TEntity> request)
-        => new(await repository.Create(request), "Registro criado com sucesso!");
+    public async Task<ApiResponse<TEntity>> Create(CreateRequest<TEntity> request, CancellationToken cancellationToken = default)
+        => new(await repository.Create(request, cancellationToken), "Registro criado com sucesso!");
 
-    public async Task<ApiResponse<TEntity>> Update(UpdateRequest<TEntity> request)
+    public async Task<ApiResponse<TEntity>> Update(UpdateRequest<TEntity> request, CancellationToken cancellationToken = default)
     {
-        var result = await repository.Update(request);
+        var result = await repository.Update(request, cancellationToken);
         return result
             is not null ? new(result, "Registro atualizado com sucesso!")
             : throw new EntityNotFoundException(request.Entity.Seq);
     }
 
-    public async Task<ApiResponse<bool>> Delete(DeleteBySeqRequest request)
+    public async Task<ApiResponse<bool>> Delete(DeleteBySeqRequest request, CancellationToken cancellationToken = default)
     {
-        var result = await repository.Delete(request);
+        var result = await repository.Delete(request, cancellationToken);
         return result
             is not null ? new(result ?? false, $"Registro {request.Seq} removido com sucesso!")
             : throw new EntityNotFoundException(request.Seq);

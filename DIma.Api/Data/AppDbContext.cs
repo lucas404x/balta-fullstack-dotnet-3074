@@ -1,3 +1,4 @@
+using System.Data;
 using System.Reflection;
 using Dima.Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Category> Categories { get; set; }
+
+    public IDbTransaction? CurrentTransaction { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,5 +29,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 #if DEBUG
         optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
 #endif
+    }
+
+    public Task PersistChanges(CancellationToken cancellationToken = default)
+    {
+        if (CurrentTransaction is null)
+        {
+            return SaveChangesAsync(cancellationToken);
+        }
+        return Task.CompletedTask;
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return base.SaveChangesAsync(cancellationToken);
     }
 }

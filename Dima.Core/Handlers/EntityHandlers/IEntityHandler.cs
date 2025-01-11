@@ -6,9 +6,9 @@ namespace Dima.Core.Handlers.EntityHandlers;
 
 public interface IEntityHandler<T> where T : BaseEntity
 {
-    Task<PagedApiResponse<List<T>>> GetAll(GetAllRequest<T> request);
-    Task<ApiResponse<T>> GetBySeq(GetBySeqRequest request);
-    Task<ApiResponse<T>> Create(CreateRequest<T> request);
-    Task<ApiResponse<T>> Update(UpdateRequest<T> request);
-    Task<ApiResponse<bool>> Delete(DeleteBySeqRequest request);
+    Task<PagedApiResponse<List<T>>> GetAll(GetAllRequest<T> request, CancellationToken cancellationToken = default);
+    Task<ApiResponse<T>> GetBySeq(GetBySeqRequest request, CancellationToken cancellationToken = default);
+    Task<ApiResponse<T>> Create(CreateRequest<T> request, CancellationToken cancellationToken = default);
+    Task<ApiResponse<T>> Update(UpdateRequest<T> request, CancellationToken cancellationToken = default);
+    Task<ApiResponse<bool>> Delete(DeleteBySeqRequest request, CancellationToken cancellationToken = default);
 }

@@ -41,35 +41,40 @@ abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup
 
     private static async Task<IValueHttpResult<PagedApiResponse<List<TEntity>>>> HandleGetAll(
         GetAllRequest<TEntity> request,
-        THandler entityHandler)
+        THandler entityHandler,
+        CancellationToken cancellationToken)
     {
         string? requestValidateMsg = request.Validate();
         if (!string.IsNullOrWhiteSpace(requestValidateMsg))
         {
             return TypedResults.BadRequest(new PagedApiResponse<List<TEntity>>(requestValidateMsg, HttpStatusCode.BadRequest));
         }
-        return TypedResults.Ok(await entityHandler.GetAll(request));
+        return TypedResults.Ok(await entityHandler.GetAll(request, cancellationToken));
     }
 
     private static async Task<IValueHttpResult<ApiResponse<TEntity>>> HandleCreate(
         CreateRequest<TEntity> request,
-        THandler entityHandler)
-        => TypedResults.Ok(await entityHandler.Create(request));
+        THandler entityHandler,
+        CancellationToken cancellationToken)
+        => TypedResults.Ok(await entityHandler.Create(request, cancellationToken));
 
     private static async Task<IValueHttpResult<ApiResponse<TEntity>>> HandleUpdate(
         UpdateRequest<TEntity> request,
-        THandler entityHandler)
-        => TypedResults.Ok(await entityHandler.Update(request));
+        THandler entityHandler,
+        CancellationToken cancellationToken)
+        => TypedResults.Ok(await entityHandler.Update(request, cancellationToken));
 
     private static async Task<IValueHttpResult<ApiResponse<bool>>> HandleDelete(
         long seq,
-        [FromHeader] string UserId,
-        THandler entityHandler)
-        => TypedResults.Ok(await entityHandler.Delete(new(UserId, seq)));
+        [FromHeader] string userId,
+        THandler entityHandler,
+        CancellationToken cancellationToken)
+        => TypedResults.Ok(await entityHandler.Delete(new(userId, seq), cancellationToken));
 
     private static async Task<IValueHttpResult<ApiResponse<TEntity>>> HandleGetBySeq(
         long seq,
-        [FromHeader] string UserId,
-        THandler entityHandler)
-        => TypedResults.Ok(await entityHandler.GetBySeq(new(UserId, seq)));
+        [FromHeader] string userId,
+        THandler entityHandler,
+        CancellationToken cancellationToken)
+        => TypedResults.Ok(await entityHandler.GetBySeq(new(userId, seq), cancellationToken));
 }

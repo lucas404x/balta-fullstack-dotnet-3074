@@ -20,7 +20,7 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
 
     private readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
     
-    public async Task<(List<TEntity> values, int totalRecords)> GetAll(GetAllRequest<TEntity> request)
+    public async Task<(List<TEntity> values, int totalRecords)> GetAll(GetAllRequest<TEntity> request, CancellationToken cancellationToken = default)
     {
         StringBuilder queryBuilder = new();
 
@@ -29,25 +29,29 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
         
         int totalRecords = await _dbSet.
             FromSqlRaw(queryBuilder.ToString(), userIdParam).
-            CountAsync();
+            CountAsync(cancellationToken: cancellationToken);
 
         if (totalRecords == 0) return _emptyRecords;
         if (request.OrderByProperties?.Count > 0)
         {
-            ValidateOrderByProperties(request);
+            ValidateOrderByProperties(request, cancellationToken);
             ApplyOrderBy(queryBuilder, request.OrderByProperties);
+        }
+        else
+        {
+            queryBuilder.Append(" ORDER BY Seq");
         }
         queryBuilder.Append($" OFFSET {request.PageSize} * {request.PageNumber - 1} ROWS FETCH NEXT {request.PageSize} ROWS ONLY;");
 
         var result = await _dbSet.
             FromSqlRaw(queryBuilder.ToString(), userIdParam).
             AsNoTracking().
-            ToListAsync();
+            ToListAsync(cancellationToken: cancellationToken);
 
         return (result, totalRecords);
     }
 
-    private static void ValidateOrderByProperties(GetAllRequest<TEntity> request)
+    private static void ValidateOrderByProperties(GetAllRequest<TEntity> request, CancellationToken cancellationToken = default)
     {
         foreach (var orderByProp in request.OrderByProperties!)
         {
@@ -72,35 +76,35 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
         }
     }
 
-    public async Task<TEntity?> GetById(GetBySeqRequest request)
+    public async Task<TEntity?> GetById(GetBySeqRequest request, CancellationToken cancellationToken = default)
         => request.Seq == 0 
         ? null 
-        : await _dbSet.FirstOrDefaultAsync(x => x.Seq == request.Seq && request.UserId == x.UserId);
+        : await _dbSet.FirstOrDefaultAsync(x => x.Seq == request.Seq && request.UserId == x.UserId, cancellationToken: cancellationToken);
 
-    public async Task<TEntity> Create(CreateRequest<TEntity> request)
+    public async Task<TEntity> Create(CreateRequest<TEntity> request, CancellationToken cancellationToken = default)
     {
-        await _dbSet.AddAsync(request.Entity);
-        await dbContext.SaveChangesAsync();
+        await _dbSet.AddAsync(request.Entity, cancellationToken);
+        await dbContext.PersistChanges(cancellationToken);
         return request.Entity;
     }
 
-    public async Task<TEntity?> Update(UpdateRequest<TEntity> request)
+    public async Task<TEntity?> Update(UpdateRequest<TEntity> request, CancellationToken cancellationToken = default)
     {
         if (request.Entity.Seq == 0) return null;
-        bool entityExists = await _dbSet.AnyAsync(x => x.Seq == request.Entity.Seq && x.UserId == request.Entity.UserId);
+        bool entityExists = await _dbSet.AnyAsync(x => x.Seq == request.Entity.Seq && x.UserId == request.Entity.UserId, cancellationToken: cancellationToken);
         if (!entityExists) return null;
         _dbSet.Update(request.Entity);
-        await dbContext.SaveChangesAsync();
+        await dbContext.PersistChanges(cancellationToken);
         return request.Entity;
     }
 
-    public async Task<bool?> Delete(DeleteBySeqRequest request)
+    public async Task<bool?> Delete(DeleteBySeqRequest request, CancellationToken cancellationToken = default)
     {
         if (request.Seq == 0) return null;
-        var entity = await _dbSet.FirstOrDefaultAsync(x => x.UserId == request.UserId && x.Seq == request.Seq);
+        var entity = await _dbSet.FirstOrDefaultAsync(x => x.UserId == request.UserId && x.Seq == request.Seq, cancellationToken: cancellationToken);
         if (entity is null) return null;
         _dbSet.Remove(entity);
-        await dbContext.SaveChangesAsync();
+        await dbContext.PersistChanges(cancellationToken);
         return true;
     }
 }
