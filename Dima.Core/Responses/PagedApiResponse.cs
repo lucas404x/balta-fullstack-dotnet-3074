@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Dima.Core.Responses;
 
-public class PagedApiResponse<T> : ApiResponse<T>
+public class PagedApiResponse<T> : ApiResponse<T> where T: class, new()
 {
     [JsonConstructor]
     public PagedApiResponse(
@@ -24,6 +24,8 @@ public class PagedApiResponse<T> : ApiResponse<T>
     {
         
     }
+
+    public static PagedApiResponse<T> Empty(string message) => new(new(), message, 1, 0);
 
     public int CurrentPage { get; set; }
     public int PageSize { get; set; }

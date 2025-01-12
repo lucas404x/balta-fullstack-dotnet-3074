@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Dima.Api.Data.Repositories;
 
-public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityRepository<TEntity> 
+public class EntityRepository<TEntity>(AppDbContext context) : IEntityRepository<TEntity> 
     where TEntity : BaseEntity
 {
     private static readonly FrozenSet<string> _entityProps = typeof(TEntity).GetProperties()
@@ -18,7 +18,7 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
 
     private static readonly (List<TEntity> values, int totalRecords) _emptyRecords = ([], 0);
 
-    private readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
+    private readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
     
     public async Task<(List<TEntity> values, int totalRecords)> GetAll(GetAllRequest<TEntity> request, CancellationToken cancellationToken = default)
     {
@@ -84,7 +84,7 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
     public async Task<TEntity> Create(CreateRequest<TEntity> request, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddAsync(request.Entity, cancellationToken);
-        await dbContext.PersistChanges(cancellationToken);
+        await context.PersistChanges(cancellationToken);
         return request.Entity;
     }
 
@@ -94,7 +94,7 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
         bool entityExists = await _dbSet.AnyAsync(x => x.Seq == request.Entity.Seq && x.UserId == request.Entity.UserId, cancellationToken: cancellationToken);
         if (!entityExists) return null;
         _dbSet.Update(request.Entity);
-        await dbContext.PersistChanges(cancellationToken);
+        await context.PersistChanges(cancellationToken);
         return request.Entity;
     }
 
@@ -104,7 +104,7 @@ public class EntityRepository<TEntity>(AppDbContext dbContext) : IEntityReposito
         var entity = await _dbSet.FirstOrDefaultAsync(x => x.UserId == request.UserId && x.Seq == request.Seq, cancellationToken: cancellationToken);
         if (entity is null) return null;
         _dbSet.Remove(entity);
-        await dbContext.PersistChanges(cancellationToken);
+        await context.PersistChanges(cancellationToken);
         return true;
     }
 }

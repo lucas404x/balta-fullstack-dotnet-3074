@@ -2,6 +2,6 @@
 
 internal interface IEndpointGroup
 {
-    static abstract void Map(IEndpointRouteBuilder app);
+    static abstract RouteGroupBuilder Map(IEndpointRouteBuilder app);
 }
 

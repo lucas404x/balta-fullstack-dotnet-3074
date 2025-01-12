@@ -5,7 +5,6 @@ using Dima.Core.Handlers.EntityHandlers;
 using Dima.Core.Requests;
 using Dima.Core.Responses;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Dima.Api.Application.Endpoints.EntityEndpoints;
 
@@ -15,7 +14,7 @@ abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup
 {
     private static readonly string _tableName = typeof(TEntity).Name;
 
-    public static void Map(IEndpointRouteBuilder app)
+    public static RouteGroupBuilder Map(IEndpointRouteBuilder app)
     {
         var mapGroup = app.MapGroup(_tableName.ToLower())
             .WithSummary(_tableName)
@@ -37,20 +36,15 @@ abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup
 
         mapGroup.MapGet("/{seq}", HandleGetBySeq)
             .WithDescription($"Retrieves a {_tableName} register by Seq.");
+
+        return mapGroup;
     }
 
     private static async Task<IValueHttpResult<PagedApiResponse<List<TEntity>>>> HandleGetAll(
         GetAllRequest<TEntity> request,
         THandler entityHandler,
-        CancellationToken cancellationToken)
-    {
-        string? requestValidateMsg = request.Validate();
-        if (!string.IsNullOrWhiteSpace(requestValidateMsg))
-        {
-            return TypedResults.BadRequest(new PagedApiResponse<List<TEntity>>(requestValidateMsg, HttpStatusCode.BadRequest));
-        }
-        return TypedResults.Ok(await entityHandler.GetAll(request, cancellationToken));
-    }
+        CancellationToken cancellationToken) 
+        => TypedResults.Ok(await entityHandler.GetAll(request, cancellationToken));
 
     private static async Task<IValueHttpResult<ApiResponse<TEntity>>> HandleCreate(
         CreateRequest<TEntity> request,

@@ -4,10 +4,13 @@ namespace Dima.Api.Application.Endpoints;
 
 internal class HomeEndpoint : IEndpointGroup
 {
-    public static void Map(IEndpointRouteBuilder app)
+    public static RouteGroupBuilder Map(IEndpointRouteBuilder app)
     {
-        app.MapGroup("/")
-            .MapGet("health-check", () => TypedResults.Ok(":p"))
+        var group = app.MapGroup("/");
+        
+        group.MapGet("health-check", () => TypedResults.Ok(":p"))
             .WithTags("/");
+        
+        return group;
     }
 }

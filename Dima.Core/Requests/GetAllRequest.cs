@@ -6,8 +6,9 @@ namespace Dima.Core.Requests;
 public record GetAllRequest<T>(
     string UserId, 
     int PageNumber = 1,
-    int PageSize = Configuration.DefaultPageSize,
-    List<RequestOrderByProp>? OrderByProperties = null) : BaseRequest(UserId) where T : BaseEntity
+    int PageSize = Configuration.DefaultPageSize, 
+    List<RequestOrderByProp>? OrderByProperties = null) : PagedRequest(UserId, PageNumber, PageSize), IRequestValidate 
+    where T : BaseEntity
 {
     [JsonIgnore]
     public string TableName { get; } = typeof(T).Name;
