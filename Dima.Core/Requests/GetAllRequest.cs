@@ -1,4 +1,5 @@
-﻿using Dima.Core.Entities;
+﻿using Dima.Core.Abstractions;
+using Dima.Core.Entities;
 using System.Text.Json.Serialization;
 
 namespace Dima.Core.Requests;

@@ -1,5 +1,4 @@
-﻿using Dima.Core.Entities;
-using Dima.Core.Requests;
+﻿using Dima.Core.Abstractions;
 using Dima.Core.Responses;
 
 namespace Dima.Api.Application.Filters;

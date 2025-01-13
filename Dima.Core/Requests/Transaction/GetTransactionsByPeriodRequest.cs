@@ -1,4 +1,6 @@
-﻿namespace Dima.Core.Requests.Transaction;
+﻿using Dima.Core.Abstractions;
+
+namespace Dima.Core.Requests.Transaction;
 
 public record GetTransactionsByPeriodRequest(
     DateTime? StartDate, DateTime? EndDate, string UserId, int PageNumber, int PageSize) : PagedRequest(UserId, PageNumber, PageSize), IRequestValidate

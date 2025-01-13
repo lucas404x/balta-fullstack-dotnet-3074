@@ -1,4 +1,4 @@
-﻿namespace Dima.Core.Requests;
+﻿namespace Dima.Core.Abstractions;
 
 public interface IRequestValidate
 {
