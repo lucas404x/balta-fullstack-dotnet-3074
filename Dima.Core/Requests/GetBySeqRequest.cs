@@ -1,3 +1,6 @@
 namespace Dima.Core.Requests;
 
-public record GetBySeqRequest(string UserId, long Seq) : BaseRequest(UserId);
+public class GetBySeqRequest : BaseRequest
+{
+    public required long Seq { get; set; }
+}

@@ -1,7 +1,15 @@
 using Dima.Core.Entities;
+using System.Text.Json.Serialization;
 
 namespace Dima.Core.Requests;
 
-public abstract record BaseRequest(string UserId);
+public abstract class BaseRequest
+{
+    [JsonIgnore]
+    public string UserId { get; set; } = string.Empty;
+}
 
-public abstract record BaseRequestWithEntity<T>(string UserId, T Entity) : BaseRequest(UserId) where T : BaseEntity;
+public abstract class BaseRequestWithEntity<T> : BaseRequest where T : BaseEntity
+{
+    public required T Entity { get; set; }
+}

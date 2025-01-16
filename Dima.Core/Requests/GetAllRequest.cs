@@ -4,13 +4,11 @@ using System.Text.Json.Serialization;
 
 namespace Dima.Core.Requests;
 
-public record GetAllRequest<T>(
-    string UserId, 
-    int PageNumber = 1,
-    int PageSize = Configuration.DefaultPageSize, 
-    List<RequestOrderByProp>? OrderByProperties = null) : PagedRequest(UserId, PageNumber, PageSize), IRequestValidate 
+public class GetAllRequest<T> : PagedRequest, IRequestValidate 
     where T : BaseEntity
 {
+    public List<RequestOrderByProp>? OrderByProperties { get; set; }
+
     [JsonIgnore]
     public string TableName { get; } = typeof(T).Name;
 

@@ -9,6 +9,7 @@ internal static class Endpoint
     public static void MapEndpoints(this WebApplication app)
     {
         app.MapEndpoint<HomeEndpoint>();
+        app.MapEndpoint<IdentityEndpoint>();
         app.MapEndpoint<CategoryEndpoint>();
         app.MapEndpoint<TransactionEndpoint>();
     }

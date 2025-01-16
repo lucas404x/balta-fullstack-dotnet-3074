@@ -6,7 +6,7 @@ internal static class AppExtensions
     {
         app.UseSwagger();
         app.UseSwaggerUI();
-        // app.MapSwagger().RequireAuthorization();
+        app.MapSwagger().RequireAuthorization();
     }
 
     public static void UseApiMiddlewares(this WebApplication app)
@@ -16,8 +16,9 @@ internal static class AppExtensions
 
     public static void UseSecurity(this WebApplication app)
     {
+        app.UseCors(ApiConfiguration.CorsPolicyName);
         app.UseHttpsRedirection();
-        // app.UseAuthentication();
-        // app.UseAuthorization();
+        app.UseAuthentication();
+        app.UseAuthorization();
     }
 }

@@ -8,7 +8,7 @@ internal class HomeEndpoint : IEndpointGroup
     {
         var group = app.MapGroup("/");
         
-        group.MapGet("health-check", () => TypedResults.Ok(":p"))
+        group.MapGet("", () => new { Message = "OK" })
             .WithTags("/");
         
         return group;

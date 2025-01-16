@@ -2,5 +2,7 @@ using Dima.Core.Entities;
 
 namespace Dima.Core.Requests;
 
-public record UpdateRequest<T>(
-    string UserId, T Entity, List<string> ChangedFields) : BaseRequestWithEntity<T>(UserId, Entity) where T : BaseEntity;
+public class UpdateRequest<T>() : BaseRequestWithEntity<T> where T : BaseEntity
+{
+    public List<string> ChangedFields { get; set; } = [];
+}

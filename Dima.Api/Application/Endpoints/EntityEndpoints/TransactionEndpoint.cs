@@ -5,6 +5,7 @@ using Dima.Core.Requests.Transaction;
 using Dima.Core.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace Dima.Api.Application.Endpoints.EntityEndpoints;
 
@@ -15,6 +16,7 @@ internal class TransactionEndpoint : IEndpointGroup
         var mapGroup = BaseEntityEndpoint<Transaction, ITransactionHandler>.Map(app);
         mapGroup
             .MapGet("/", HandleGetByPeriod)
+            .RequireAuthorization()
             .WithDescription("Get all transactions whose CreatedDate is between the StartDate and EndDate range.");
 
         return mapGroup;
@@ -25,11 +27,18 @@ internal class TransactionEndpoint : IEndpointGroup
         [FromQuery] DateTime? EndDate, 
         [FromQuery] int PageNumber, 
         [FromQuery] int PageSize,
-        [FromHeader] string UserId, 
+        ClaimsPrincipal user,
         ITransactionHandler transactionHandler,
         CancellationToken cancellationToken)
     {
-        var request = new GetTransactionsByPeriodRequest(StartDate, EndDate, UserId, PageNumber, PageSize);
+        var request = new GetTransactionsByPeriodRequest
+        {
+            StartDate = StartDate,
+            EndDate = EndDate,
+            PageNumber = PageNumber,
+            PageSize = PageSize,
+            UserId = user.Identity!.Name!
+        };
         string? errorMsg = request.Validate();
         if (!string.IsNullOrWhiteSpace(errorMsg))
         {

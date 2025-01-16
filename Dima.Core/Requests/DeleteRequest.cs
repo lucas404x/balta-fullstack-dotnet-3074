@@ -1,3 +1,6 @@
 ﻿namespace Dima.Core.Requests;
 
-public record DeleteBySeqRequest(string UserId, long Seq) : BaseRequest(UserId);
+public class DeleteBySeqRequest : BaseRequest
+{
+    public required long Seq { get; set; }
+}

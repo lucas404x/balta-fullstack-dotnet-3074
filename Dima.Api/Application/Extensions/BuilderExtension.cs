@@ -3,7 +3,10 @@ using Dima.Api.Application.Handlers.EntityHandler;
 using Dima.Api.Data;
 using Dima.Api.Data.Repositories;
 using Dima.Api.Domain.Abstractions;
+using Dima.Api.Domain.Models;
+using Dima.Core;
 using Dima.Core.Handlers.EntityHandlers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dima.Api.Application.Extensions;
@@ -20,6 +23,39 @@ internal static class BuilderExtension
             // shows the full qualified name instead of class's name only.
             x.CustomSchemaIds(n => n.FullName);
         });
+    }
+
+    public static void AddSecurity(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(
+                ApiConfiguration.CorsPolicyName,
+                policy => policy
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .WithOrigins([Configuration.BackendUrl, Configuration.FrontendUrl]));
+        });
+
+        builder.Services
+            .AddAuthentication(IdentityConstants.ApplicationScheme)
+            .AddIdentityCookies();
+
+        builder.Services
+            .AddIdentityCore<UserModel>()
+            .AddRoles<IdentityRoleModel>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddApiEndpoints();
+
+        builder.Services.AddAuthorization();
+    }
+
+    public static void AddConfiguration(this WebApplicationBuilder builder)
+    {
+        var urlsSection = builder.Configuration.GetRequiredSection("Urls");
+        Configuration.BackendUrl = urlsSection.GetValue<string>("Backend") ?? throw new InvalidDataException("Backend url must be provided.");
+        Configuration.FrontendUrl = urlsSection.GetValue<string>("Frontend") ?? throw new InvalidDataException("Frontend url must be provided.");
     }
 
     public static void AddServices(this WebApplicationBuilder builder)

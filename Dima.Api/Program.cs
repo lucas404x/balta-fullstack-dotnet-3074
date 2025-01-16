@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddApiDocs();
 builder.AddServices();
+builder.AddSecurity();
 
 var app = builder.Build();
 

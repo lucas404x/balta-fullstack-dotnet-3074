@@ -1,4 +1,7 @@
 namespace Dima.Core.Requests;
 
-public record PagedRequest(
-    string UserId, int PageNumber, int PageSize = Configuration.DefaultPageSize) : BaseRequest(UserId);
+public class PagedRequest : BaseRequest
+{
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = Configuration.DefaultPageSize;
+}

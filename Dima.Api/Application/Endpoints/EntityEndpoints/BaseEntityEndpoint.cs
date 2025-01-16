@@ -4,7 +4,7 @@ using Dima.Core.Entities;
 using Dima.Core.Handlers.EntityHandlers;
 using Dima.Core.Requests;
 using Dima.Core.Responses;
-using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dima.Api.Application.Endpoints.EntityEndpoints;
 
@@ -16,7 +16,8 @@ abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup
 
     public static RouteGroupBuilder Map(IEndpointRouteBuilder app)
     {
-        var mapGroup = app.MapGroup(_tableName.ToLower())
+        var mapGroup = app.MapGroup($"v1/{_tableName.ToLower()}")
+            .RequireAuthorization()
             .WithSummary(_tableName)
             .WithTags(_tableName);
 
@@ -41,34 +42,60 @@ abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup
     }
 
     private static async Task<IValueHttpResult<PagedApiResponse<List<TEntity>>>> HandleGetAll(
+        ClaimsPrincipal user,
         GetAllRequest<TEntity> request,
         THandler entityHandler,
-        CancellationToken cancellationToken) 
-        => TypedResults.Ok(await entityHandler.GetAll(request, cancellationToken));
+        CancellationToken cancellationToken)
+    {
+        request.UserId = user.Identity!.Name!;
+        return TypedResults.Ok(await entityHandler.GetAll(request, cancellationToken));
+    }
 
     private static async Task<IValueHttpResult<ApiResponse<TEntity>>> HandleCreate(
+        ClaimsPrincipal user,
         CreateRequest<TEntity> request,
         THandler entityHandler,
         CancellationToken cancellationToken)
-        => TypedResults.Ok(await entityHandler.Create(request, cancellationToken));
+    {
+        request.UserId = user.Identity!.Name!;
+        return TypedResults.Ok(await entityHandler.Create(request, cancellationToken));
+    }
 
     private static async Task<IValueHttpResult<ApiResponse<TEntity>>> HandleUpdate(
+        ClaimsPrincipal user,
         UpdateRequest<TEntity> request,
         THandler entityHandler,
         CancellationToken cancellationToken)
-        => TypedResults.Ok(await entityHandler.Update(request, cancellationToken));
+    {
+        request.UserId = user.Identity!.Name!;
+        return TypedResults.Ok(await entityHandler.Update(request, cancellationToken));
+    }
 
     private static async Task<IValueHttpResult<ApiResponse<bool>>> HandleDelete(
         long seq,
-        [FromHeader] string userId,
+        ClaimsPrincipal user,
         THandler entityHandler,
         CancellationToken cancellationToken)
-        => TypedResults.Ok(await entityHandler.Delete(new(userId, seq), cancellationToken));
+    {
+        var request = new DeleteBySeqRequest
+        {
+            Seq = seq,
+            UserId = user.Identity!.Name!,
+        };
+        return TypedResults.Ok(await entityHandler.Delete(request, cancellationToken));
+    }
 
     private static async Task<IValueHttpResult<ApiResponse<TEntity>>> HandleGetBySeq(
         long seq,
-        [FromHeader] string userId,
+        ClaimsPrincipal user,
         THandler entityHandler,
         CancellationToken cancellationToken)
-        => TypedResults.Ok(await entityHandler.GetBySeq(new(userId, seq), cancellationToken));
+    {
+        var request = new GetBySeqRequest
+        {
+            Seq = seq,
+            UserId = user.Identity!.Name!,
+        };
+        return TypedResults.Ok(await entityHandler.GetBySeq(request, cancellationToken));
+    }
 }
