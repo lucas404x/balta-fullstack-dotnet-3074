@@ -7,8 +7,8 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Dima.Api/DIma.Api.csproj", "Dima.Api/"]
-RUN dotnet restore "Dima.Api/DIma.Api.csproj"
+COPY ["Dima.Api/Dima.Api.csproj", "Dima.Api/"]
+RUN dotnet restore "Dima.Api/Dima.Api.csproj"
 COPY . .
 WORKDIR "/src/Dima.Api"
 RUN dotnet build "Dima.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
