@@ -25,6 +25,13 @@ internal static class BuilderExtension
         });
     }
 
+    public static void AddConfiguration(this WebApplicationBuilder builder)
+    {
+        var urlsSection = builder.Configuration.GetRequiredSection("Urls");
+        Configuration.BackendUrl = urlsSection.GetValue<string>("Backend") ?? throw new InvalidDataException("Backend url must be provided.");
+        Configuration.FrontendUrl = urlsSection.GetValue<string>("Frontend") ?? throw new InvalidDataException("Frontend url must be provided.");
+    }
+
     public static void AddSecurity(this WebApplicationBuilder builder)
     {
         builder.Services.AddCors(options =>
@@ -49,13 +56,6 @@ internal static class BuilderExtension
             .AddApiEndpoints();
 
         builder.Services.AddAuthorization();
-    }
-
-    public static void AddConfiguration(this WebApplicationBuilder builder)
-    {
-        var urlsSection = builder.Configuration.GetRequiredSection("Urls");
-        Configuration.BackendUrl = urlsSection.GetValue<string>("Backend") ?? throw new InvalidDataException("Backend url must be provided.");
-        Configuration.FrontendUrl = urlsSection.GetValue<string>("Frontend") ?? throw new InvalidDataException("Frontend url must be provided.");
     }
 
     public static void AddServices(this WebApplicationBuilder builder)

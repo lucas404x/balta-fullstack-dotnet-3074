@@ -4,6 +4,7 @@ using Dima.Api.Application.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddApiDocs();
+builder.AddConfiguration();
 builder.AddServices();
 builder.AddSecurity();
 
