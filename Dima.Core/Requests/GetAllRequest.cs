@@ -1,10 +1,9 @@
-﻿using Dima.Core.Abstractions;
-using Dima.Core.Entities;
+﻿using Dima.Core.Entities;
 using System.Text.Json.Serialization;
 
 namespace Dima.Core.Requests;
 
-public class GetAllRequest<T> : PagedRequest, IRequestValidate 
+public class GetAllRequest<T> : PagedRequest 
     where T : BaseEntity
 {
     public List<RequestOrderByProp>? OrderByProperties { get; set; }
@@ -12,10 +11,8 @@ public class GetAllRequest<T> : PagedRequest, IRequestValidate
     [JsonIgnore]
     public string TableName { get; } = typeof(T).Name;
 
-    public string? Validate()
+    public override string? Validate()
     {
-        if (PageNumber < 1) return "Page number must be greater than 0.";
-        if (PageSize < 1) return "Page size must be greater than 0.";
         if (OrderByProperties is not null && OrderByProperties.Count > 1)
         {
             var groupedProps = OrderByProperties
@@ -26,7 +23,7 @@ public class GetAllRequest<T> : PagedRequest, IRequestValidate
             if (groupedProps.Count != OrderByProperties.Count)
                 return "There are duplicated properties in the OrderByProperties list.";
         }
-        return null;
+        return base.Validate();
     }
 }
 

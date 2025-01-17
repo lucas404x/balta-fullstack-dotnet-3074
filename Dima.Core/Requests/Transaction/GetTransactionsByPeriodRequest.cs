@@ -1,18 +1,16 @@
-﻿using Dima.Core.Abstractions;
+﻿namespace Dima.Core.Requests.Transaction;
 
-namespace Dima.Core.Requests.Transaction;
-
-public class GetTransactionsByPeriodRequest : PagedRequest, IRequestValidate
+public class GetTransactionsByPeriodRequest : PagedRequest
 {
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
 
-    public string? Validate()
+    public override string? Validate()
     {
         if ((StartDate is null && EndDate is not null) || (StartDate is not null && EndDate is null))
             return "One date was provided but the another wasn't. You must provide both or any of them.";
-        else if (StartDate > EndDate) 
+        if (StartDate > EndDate) 
             return "Start Date must be less than End Date.";
-        return null;
+        return base.Validate();
     }
 }

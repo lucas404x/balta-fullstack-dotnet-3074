@@ -4,18 +4,6 @@ namespace Dima.Core.Entities;
 
 public abstract class BaseEntity
 {   
-    #region Validation
-    
-    internal class BaseEntityValidator : AbstractValidator<BaseEntity>
-    {
-        internal BaseEntityValidator()
-        {
-            RuleFor(x => x.CreatedDate).NotNull();
-        }
-    }
-    
-    #endregion
-    
     public long Seq { get; set; }
     public string? UserId { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;

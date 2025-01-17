@@ -1,0 +1,98 @@
+﻿@page "/login"
+@using Dima.Core.Requests.Account
+@using Dima.Core.Validators
+@using Dima.Web.Utils
+@layout HeadlessLayout
+
+<PageTitle>Dima - Acesse sua conta</PageTitle>
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="12" md="8" lg="6" xl="6" xxl="6">
+        <MudPaper Class="mud-width-full pa-8">
+            <div class="d-flex justify-center pb-8 pt-8">
+                <img 
+                src="imgs/dima.png"
+                alt="Dima - Controle Financeiro"
+                width="200"/>
+            </div>
+
+            <MudForm @ref="_form" Model="_model" Validation="@(ValidatorsUtils.GetValidatorFormCallback(_validator))">
+                <MudTextField @bind-Value="_model.Email" T="string"
+                InputType="InputType.Email"
+                For="@(() => _model.Email)"
+                Immediate="true"
+                Label="E-mail" />
+
+                <MudTextField @bind-Value="_model.Password"
+                T="string" InputType="_passwordType"
+                Label="Password"
+                Immediate="true"
+                For="@(() => _model.Password)"
+                Adornment="Adornment.End" AdornmentIcon="@_passwordIcon" OnAdornmentClick="OnPasswordVisibilityClick" />
+
+                <MudStack Class="mt-4" Justify="Justify.SpaceBetween" Row="true">
+                    <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    OnClick="@(async () => await Submit())"
+                    DropShadow="false">Entrar</MudButton>
+
+                    <MudButton
+                    ButtonType="ButtonType.Button"
+                    Variant="Variant.Text"
+                    Color="Color.Secondary"
+                    DropShadow="false">QUERO ME CADASTRAR</MudButton>
+
+                </MudStack>
+
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Inject] ISnackbar Snackbar { get; set; } = null!;
+
+    private MudForm? _form;
+    private LoginRequest _model = new();
+    private LoginRequestValidator _validator = new();
+
+    private string _passwordIcon = Icons.Material.Filled.VisibilityOff;
+    private InputType _passwordType = InputType.Password;
+
+    private bool _showPassword;
+    private bool ShowPassword
+    {
+        get => _showPassword;
+        set
+        {
+            _showPassword = value;
+            if (_showPassword)
+            {
+                _passwordIcon = Icons.Material.Filled.VisibilityOff;
+                _passwordType = InputType.Text;
+            }
+            else
+            {
+                _passwordIcon = Icons.Material.Filled.VisibilityOff;
+                _passwordType = InputType.Password;
+            }
+        }
+    }
+
+    private void OnPasswordVisibilityClick()
+    {
+        ShowPassword = !ShowPassword;
+    }
+
+    private async Task Submit()
+    {
+        _form?.Validate();
+        if (_form?.IsValid ?? true)
+        {
+            Snackbar.Add("Login efetuado com sucesso!", Severity.Success);
+        } 
+        await Task.Yield();
+    }
+    
+}
