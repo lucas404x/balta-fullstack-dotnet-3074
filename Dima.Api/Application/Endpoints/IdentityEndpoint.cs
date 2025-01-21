@@ -40,7 +40,7 @@ internal class IdentityEndpoint : IEndpointGroup
         return TypedResults.Ok(roles);
     }
 
-    private async static Task<IResult> HandleLogout(
+    private static async Task<IResult> HandleLogout(
         SignInManager<UserModel> signInManager)
     {
         await signInManager.SignOutAsync();

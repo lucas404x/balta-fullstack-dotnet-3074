@@ -1,7 +1,6 @@
 using Dima.Core.Enums;
 using Dima.Core.Extensions;
-using Dima.Core.Validators;
-using FluentValidation;
+using Dima.Core.Validators.EntityValidators;
 
 namespace Dima.Core.Entities;
 

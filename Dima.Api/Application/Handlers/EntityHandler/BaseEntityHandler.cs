@@ -1,5 +1,5 @@
 ﻿using Dima.Api.Domain.Abstractions;
-using Dima.Api.Domain.Exceptions.EntityExceptions;
+using Dima.Api.Domain.Exceptions;
 using Dima.Core.Entities;
 using Dima.Core.Handlers.EntityHandlers;
 using Dima.Core.Requests;
@@ -7,7 +7,7 @@ using Dima.Core.Responses;
 
 namespace Dima.Api.Application.Handlers.EntityHandler;
 
-abstract public class BaseEntityHandler<TEntity>(IEntityRepository<TEntity> repository) : IEntityHandler<TEntity>
+public abstract class BaseEntityHandler<TEntity>(IEntityRepository<TEntity> repository) : IEntityHandler<TEntity>
     where TEntity : BaseEntity
 {
     public async Task<PagedApiResponse<List<TEntity>>> GetAll(GetAllRequest<TEntity> request, CancellationToken cancellationToken = default)

@@ -1,4 +1,4 @@
-﻿using Dima.Api.Domain.Exceptions;
+﻿using Dima.Core.Exceptions;
 using Dima.Core.Responses;
 using Microsoft.AspNetCore.Diagnostics;
 

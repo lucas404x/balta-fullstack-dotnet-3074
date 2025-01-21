@@ -1,5 +1,5 @@
 using Dima.Core.Extensions;
-using Dima.Core.Validators;
+using Dima.Core.Validators.EntityValidators;
 
 namespace Dima.Core.Entities;
 

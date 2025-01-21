@@ -6,8 +6,11 @@ namespace Dima.Core.Responses;
 public class ApiResponse<T>
 {
     private readonly HttpStatusCode _code;
-
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public T? Result { get; set; }
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string Message { get; set; } = string.Empty;
 
     public bool IsSuccess => (int)_code < 400;

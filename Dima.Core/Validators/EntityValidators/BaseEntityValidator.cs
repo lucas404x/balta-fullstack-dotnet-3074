@@ -1,7 +1,7 @@
 ﻿using Dima.Core.Entities;
 using FluentValidation;
 
-namespace Dima.Core.Validators;
+namespace Dima.Core.Validators.EntityValidators;
 
 public sealed class BaseEntityValidator : AbstractValidator<BaseEntity>
 {

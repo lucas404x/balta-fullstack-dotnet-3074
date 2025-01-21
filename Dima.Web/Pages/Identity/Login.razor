@@ -1,7 +1,5 @@
 ﻿@page "/login"
 @using Dima.Core.Requests.Account
-@using Dima.Core.Validators
-@using Dima.Web.Utils
 @layout HeadlessLayout
 
 <PageTitle>Dima - Acesse sua conta</PageTitle>
@@ -16,33 +14,27 @@
                 width="200"/>
             </div>
 
-            <MudForm @ref="_form" Model="_model" Validation="@(ValidatorsUtils.GetValidatorFormCallback(_validator))">
-                <MudTextField @bind-Value="_model.Email" T="string"
-                InputType="InputType.Email"
-                For="@(() => _model.Email)"
-                Immediate="true"
-                Label="E-mail" />
+            <MudForm 
+                @ref="_form" Model="_model" Validation="@(ValidatorsUtils.GetValidatorFormCallback(_validator))"
+                Spacing="4">
+                
+                <MudTextField 
+                    @bind-Value="_model.Email" T="string" For="@(() => _model.Email)" 
+                    Label="Email" InputType="InputType.Email" Immediate="true" />
 
-                <MudTextField @bind-Value="_model.Password"
-                T="string" InputType="_passwordType"
-                Label="Password"
-                Immediate="true"
-                For="@(() => _model.Password)"
-                Adornment="Adornment.End" AdornmentIcon="@_passwordIcon" OnAdornmentClick="OnPasswordVisibilityClick" />
+                <MudTextField 
+                    @bind-Value="_model.Password" T="string" For="@(() => _model.Password)"
+                    Label="Password" InputType="_passwordType" Immediate="true"
+                    Adornment="Adornment.End" AdornmentIcon="@_passwordIcon" OnAdornmentClick="OnPasswordVisibilityClick" />
 
                 <MudStack Class="mt-4" Justify="Justify.SpaceBetween" Row="true">
                     <MudButton
-                    Variant="Variant.Filled"
-                    Color="Color.Primary"
-                    OnClick="@(async () => await Submit())"
-                    DropShadow="false">Entrar</MudButton>
+                        OnClick="Submit"
+                        DropShadow="false" Variant="Variant.Filled" Color="Color.Primary">Entrar</MudButton>
 
                     <MudButton
-                    ButtonType="ButtonType.Button"
-                    Variant="Variant.Text"
-                    Color="Color.Secondary"
-                    DropShadow="false">QUERO ME CADASTRAR</MudButton>
-
+                        Href="/register"
+                        DropShadow="false" Variant="Variant.Text" Color="Color.Secondary">QUERO ME CADASTRAR</MudButton>
                 </MudStack>
 
             </MudForm>

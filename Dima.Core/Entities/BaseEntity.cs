@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace Dima.Core.Entities;
 
 public abstract class BaseEntity

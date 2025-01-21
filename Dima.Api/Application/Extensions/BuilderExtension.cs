@@ -4,7 +4,6 @@ using Dima.Api.Data;
 using Dima.Api.Data.Repositories;
 using Dima.Api.Domain.Abstractions;
 using Dima.Api.Domain.Models;
-using Dima.Core;
 using Dima.Core.Handlers.EntityHandlers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -28,8 +27,8 @@ internal static class BuilderExtension
     public static void AddConfiguration(this WebApplicationBuilder builder)
     {
         var urlsSection = builder.Configuration.GetRequiredSection("Urls");
-        Configuration.BackendUrl = urlsSection.GetValue<string>("Backend") ?? throw new InvalidDataException("Backend url must be provided.");
-        Configuration.FrontendUrl = urlsSection.GetValue<string>("Frontend") ?? throw new InvalidDataException("Frontend url must be provided.");
+        ApiConfiguration.BackendUrl = urlsSection.GetValue<string>("Backend") ?? throw new InvalidDataException("Backend url must be provided.");
+        ApiConfiguration.FrontendUrl = urlsSection.GetValue<string>("Frontend") ?? throw new InvalidDataException("Frontend url must be provided.");
     }
 
     public static void AddSecurity(this WebApplicationBuilder builder)
@@ -42,7 +41,7 @@ internal static class BuilderExtension
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials()
-                .WithOrigins([Configuration.BackendUrl, Configuration.FrontendUrl]));
+                .WithOrigins(ApiConfiguration.BackendUrl, ApiConfiguration.FrontendUrl));
         });
 
         builder.Services

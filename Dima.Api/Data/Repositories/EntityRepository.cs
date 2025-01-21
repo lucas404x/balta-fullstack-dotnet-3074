@@ -1,5 +1,5 @@
 ﻿using Dima.Api.Domain.Abstractions;
-using Dima.Api.Domain.Exceptions.EntityExceptions;
+using Dima.Api.Domain.Exceptions;
 using Dima.Core.Entities;
 using Dima.Core.Requests;
 using Microsoft.Data.SqlClient;
