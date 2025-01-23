@@ -1,5 +1,4 @@
 ﻿@page "/login"
-@using Dima.Core.Requests.Account
 @layout HeadlessLayout
 
 <PageTitle>Dima - Acesse sua conta</PageTitle>
@@ -41,50 +40,3 @@
         </MudPaper>
     </MudItem>
 </MudGrid>
-
-@code {
-    [Inject] ISnackbar Snackbar { get; set; } = null!;
-
-    private MudForm? _form;
-    private LoginRequest _model = new();
-    private LoginRequestValidator _validator = new();
-
-    private string _passwordIcon = Icons.Material.Filled.VisibilityOff;
-    private InputType _passwordType = InputType.Password;
-
-    private bool _showPassword;
-    private bool ShowPassword
-    {
-        get => _showPassword;
-        set
-        {
-            _showPassword = value;
-            if (_showPassword)
-            {
-                _passwordIcon = Icons.Material.Filled.VisibilityOff;
-                _passwordType = InputType.Text;
-            }
-            else
-            {
-                _passwordIcon = Icons.Material.Filled.VisibilityOff;
-                _passwordType = InputType.Password;
-            }
-        }
-    }
-
-    private void OnPasswordVisibilityClick()
-    {
-        ShowPassword = !ShowPassword;
-    }
-
-    private async Task Submit()
-    {
-        _form?.Validate();
-        if (_form?.IsValid ?? true)
-        {
-            Snackbar.Add("Login efetuado com sucesso!", Severity.Success);
-        } 
-        await Task.Yield();
-    }
-    
-}

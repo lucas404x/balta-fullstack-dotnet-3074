@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace Dima.Api.Application.Endpoints.EntityEndpoints;
 
-abstract internal class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup
+internal abstract class BaseEntityEndpoint<TEntity, THandler> : IEndpointGroup
     where TEntity : BaseEntity
     where THandler : IEntityHandler<TEntity>
 {

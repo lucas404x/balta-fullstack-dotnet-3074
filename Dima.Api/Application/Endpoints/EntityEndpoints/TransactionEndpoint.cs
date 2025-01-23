@@ -6,6 +6,7 @@ using Dima.Core.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
+using Dima.Api.Data.Repositories;
 
 namespace Dima.Api.Application.Endpoints.EntityEndpoints;
 
@@ -29,6 +30,8 @@ internal class TransactionEndpoint : IEndpointGroup
         [FromQuery] int PageSize,
         ClaimsPrincipal user,
         ITransactionHandler transactionHandler,
+        EntityRepository<Transaction> transactionRepository,
+        EntityRepository<Category> categoryRepository,
         CancellationToken cancellationToken)
     {
         var request = new GetTransactionsByPeriodRequest

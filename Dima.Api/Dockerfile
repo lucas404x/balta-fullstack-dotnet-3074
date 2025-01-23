@@ -20,4 +20,4 @@ RUN dotnet publish "Dima.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Dima.Api.dll"]
+ENTRYPOINT ["dotnet", "Dima.Api.dll", "--launch-profile", "https"]

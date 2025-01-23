@@ -8,11 +8,20 @@ namespace Dima.Web.Pages.Identity;
 
 public partial class Register : ComponentBase
 {
+    #region Dependencies
+    
+    [Inject]
+    private IAccountHandler AccountHandler { get; set; } = null!;
+    
     [Inject]
     private ISnackbar SnackBar { get; set; } = null!;
     
     [Inject]
-    private IAccountHandler AccountHandler { get; set; } = null!;
+    private NavigationManager NavigationManager { get; set; } = null!;
+    
+    #endregion
+    
+    #region Properties
     
     private MudForm _form = null!;
     private readonly RegisterRequest _model = new();
@@ -40,6 +49,8 @@ public partial class Register : ComponentBase
             }
         }
     }
+    
+    #endregion
 
     private void OnPasswordVisibilityClick()
     {
@@ -55,7 +66,11 @@ public partial class Register : ComponentBase
         {
             SnackBar.Add("Cadastro realizado com sucesso!", Severity.Success);
             // TODO: Redirect user to home page
+            NavigationManager.NavigateTo("/");
         }
-        // if (response.IsSuccess)
+        else
+        {
+            SnackBar.Add(response.Message, Severity.Error);
+        }
     }
 }
